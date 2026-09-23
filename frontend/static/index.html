@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>ZenithFlow — Developer Wellness & Ergonomic Flow Copilot</title>
+<!-- Google Fonts: Inter & Material Symbols Outlined -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined">
+<style>
+  :root {
+    --accent-emerald: #10b981;
+    --accent-emerald-dark: #059669;
+    --accent-teal: #0d9488;
+    --text-main: #1e293b;
+    --text-muted: #64748b;
+    --border-emerald: rgba(16, 185, 129, 0.2);
+    --shadow-health: 0 12px 32px rgba(16, 185, 129, 0.08), 0 2px 8px rgba(0, 0, 0, 0.04);
+    --radius-card: 20px;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.78), rgba(240, 253, 244, 0.72)), url('https://images.unsplash.com/photo-1545205597-3d9d02c29597?auto=format&fit=crop&w=1920&q=80') center/cover fixed no-repeat;
+    color: var(--text-main);
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    height: 100dvh;
+    overflow: hidden;
+    position: relative;
+  }
+
+  /* --- App Header --- */
+  header {
+    background: rgba(255, 255, 255, 0.88);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    border-bottom: 1px solid var(--border-emerald);
+    padding: 0.95rem 1.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 4px 20px -2px rgba(16, 185, 129, 0.08);
+    z-index: 10;
+  }
+
+  .logo-container {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+  }
+
+  .brand-badge {
+    width: 44px;
+    height: 44px;
+    flex-shrink: 0;
+    border-radius: 14px;
+    background: rgba(240, 253, 244, 0.95);
+    border: 1px solid rgba(16, 185, 129, 0.35);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 14px rgba(16, 185, 129, 0.15);
+    animation: pulseGlow 3s ease-in-out infinite;
+  }
+
+  .header-titles {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .app-title {
+    margin: 0;
+    font-size: 1.2rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, #0f172a 20%, #059669 65%, #0d9488 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .subtitle {
+    font-size: 0.82rem;
+    font-weight: 500;
+    color: var(--text-muted);
+  }
+
+  .status-badge {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.84rem;
+    font-weight: 600;
+    color: #059669;
+    background: rgba(240, 253, 244, 0.85);
+    border: 1px solid rgba(16, 185, 129, 0.3);
+    padding: 0.4rem 0.85rem;
+    border-radius: 20px;
+    box-shadow: 0 2px 8px rgba(16, 185, 129, 0.1);
+  }
+
+  .status-dot {
+    width: 8px;
+    height: 8px;
+    flex-shrink: 0;
+    border-radius: 50%;
+    background-color: #10b981;
+    box-shadow: 0 0 8px #10b981;
+    animation: statusPulse 2s ease-in-out infinite;
+  }
+
+  /* --- Chat Area --- */
+  #log {
+    flex: 1;
+    overflow-y: auto;
+    padding: 24px;
+    max-width: 860px;
+    width: 100%;
+    margin: 0 auto;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    z-index: 2;
+    scroll-behavior: smooth;
+  }
+
+  .msg {
+    margin: .4rem 0;
+    animation: slideFadeIn 0.35s ease-out forwards;
+  }
+
+  .msg.user { text-align: right; }
+
+  .bubble {
+    display: inline-block;
+    padding: .95rem 1.25rem;
+    border-radius: var(--radius-card);
+    background: rgba(255, 255, 255, 0.92);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    border: 1px solid var(--border-emerald);
+    color: var(--text-main);
+    text-align: left;
+    max-width: 85%;
+    white-space: pre-wrap;
+    box-shadow: var(--shadow-health);
+    line-height: 1.6;
+    font-size: 0.96rem;
+    box-sizing: border-box;
+    word-break: break-word;
+  }
+
+  .msg.user .bubble {
+    background: linear-gradient(135deg, var(--accent-emerald), var(--accent-emerald-dark));
+    color: #ffffff;
+    border: none;
+    box-shadow: 0 6px 20px rgba(16, 185, 129, 0.3);
+  }
+
+  .bubble.rich {
+    background: transparent;
+    border: none;
+    padding: 0;
+    max-width: 100%;
+    white-space: normal;
+    box-shadow: none;
+  }
+
+  /* --- Active Generation Pulse Loader --- */
+  .loading-card {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1.1rem 1.4rem;
+    border-radius: var(--radius-card);
+    background: rgba(255, 255, 255, 0.92);
+    backdrop-filter: blur(18px);
+    border: 1px solid rgba(16, 185, 129, 0.3);
+    box-shadow: 0 12px 32px rgba(16, 185, 129, 0.1);
+    font-weight: 600;
+    font-size: 0.94rem;
+    color: #059669;
+    animation: pulseShimmer 1.8s ease-in-out infinite;
+  }
+
+  /* --- Quick-Action Suggestion Chips (Horizontal Touch Scroll) --- */
+  .input-container-wrapper {
+    width: 100%;
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 0 16px 16px 16px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+    z-index: 10;
+  }
+
+  .quick-chips {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 6px;
+    white-space: nowrap;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .quick-chips::-webkit-scrollbar { display: none; }
+
+  .chip {
+    flex-shrink: 0;
+    background: rgba(255, 255, 255, 0.85);
+    border: 1px solid rgba(16, 185, 129, 0.3);
+    border-radius: 9999px;
+    padding: 6px 14px;
+    font-size: 13px;
+    font-weight: 500;
+    color: #065f46;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    backdrop-filter: blur(12px);
+    box-shadow: 0 2px 8px rgba(16, 185, 129, 0.08);
+  }
+
+  .chip:hover {
+    background: #10B981;
+    color: #ffffff;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25);
+    border-color: #10B981;
+  }
+
+  /* --- Input Form (Capsule Pill Bar) --- */
+  form {
+    display: flex;
+    gap: .75rem;
+    padding: 0.75rem 1.25rem;
+    border: 1px solid var(--border-emerald);
+    background: rgba(255, 255, 255, 0.92);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    width: 100%;
+    border-radius: 9999px;
+    box-shadow: 0 8px 30px rgba(16, 185, 129, 0.12);
+    box-sizing: border-box;
+  }
+
+  input {
+    flex: 1;
+    padding: .85rem 1.4rem;
+    border: 1px solid transparent;
+    border-radius: 9999px;
+    font-size: 0.96rem;
+    background: transparent;
+    color: var(--text-main);
+    outline: none;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    min-width: 0;
+  }
+
+  input::placeholder { color: var(--text-muted); }
+
+  input:focus {
+    border-color: rgba(16, 185, 129, 0.4);
+  }
+
+  button {
+    padding: .85rem 1.6rem;
+    border: none;
+    border-radius: 9999px;
+    background: linear-gradient(135deg, var(--accent-emerald), var(--accent-emerald-dark));
+    color: #ffffff;
+    font-weight: 700;
+    font-size: 0.96rem;
+    cursor: pointer;
+    transition: transform 0.15s ease, box-shadow 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    box-shadow: 0 4px 14px rgba(16, 185, 129, 0.3);
+    flex-shrink: 0;
+  }
+
+  button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(16, 185, 129, 0.45);
+  }
+
+  button:active {
+    transform: translateY(1px);
+  }
+
+  /* --- A2UI component styles (Card, Column, Row, Text, Divider, List, Image, Icon) --- */
+  .a2card {
+    border: 1px solid var(--border-emerald);
+    border-radius: var(--radius-card);
+    padding: 1.35rem;
+    background: rgba(255, 255, 255, 0.92);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    box-shadow: var(--shadow-health);
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    overflow: hidden;
+    animation: slideFadeIn 0.35s ease-out forwards;
+  }
+
+  .a2card + .a2card, .a2col > .a2card { margin-top: .8rem; }
+  .a2col { display: flex; flex-direction: column; gap: .55rem; width: 100%; }
+  .a2row { display: flex; flex-direction: row; gap: .85rem; align-items: center; flex-wrap: wrap; width: 100%; }
+  .a2row.between { justify-content: space-between; }
+  .a2text { margin: 0; line-height: 1.6; color: var(--text-main); word-break: break-word; }
+  .a2text.a2-h1 { font-size: 1.55rem; font-weight: 700; color: #0f172a; }
+  .a2text.a2-h2 { font-size: 1.35rem; font-weight: 700; color: #0f172a; }
+  .a2text.a2-h3 { font-size: 1.18rem; font-weight: 700; color: #059669; }
+  .a2text.a2-h4 { font-size: 1.02rem; font-weight: 600; color: #0d9488; }
+  .a2text.a2-caption { font-size: .86rem; color: var(--text-muted); }
+  .a2divider { border: none; border-top: 1px solid var(--border-emerald); margin: .65rem 0; width: 100%; }
+  .a2img {
+    max-width: 100%;
+    height: auto;
+    object-fit: contain;
+    border-radius: 14px;
+    display: block;
+    border: 1px solid var(--border-emerald);
+    box-shadow: 0 6px 18px rgba(16, 185, 129, 0.12);
+  }
+  /* --- A2UI Video Component Styling --- */
+  .a2ui-video-wrapper,
+  video.a2ui-video,
+  video.a2video {
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    aspect-ratio: 16 / 9; /* CRITICAL: Enforce a correct playback proportion */
+    border-radius: 12px;
+    object-fit: contain; /* Ensure the video content fits cleanly within the player */
+    overflow: hidden;
+    display: block;
+    background: #0f172a;
+    border: 1px solid var(--border-emerald);
+    box-shadow: 0 6px 18px rgba(16, 185, 129, 0.12);
+    margin: 0.65rem 0;
+  }
+  .material-symbols-outlined { font-family: 'Material Symbols Outlined'; font-size: 1.35rem; line-height: 1; vertical-align: middle; color: #059669; }
+
+  /* --- Keyframe Animations --- */
+  @keyframes pulseGlow {
+    0% { transform: scale(1); box-shadow: 0 4px 14px rgba(16, 185, 129, 0.15); }
+    50% { transform: scale(1.06); box-shadow: 0 6px 20px rgba(16, 185, 129, 0.35); }
+    100% { transform: scale(1); box-shadow: 0 4px 14px rgba(16, 185, 129, 0.15); }
+  }
+
+  @keyframes pulseShimmer {
+    0% { opacity: 0.75; transform: scale(0.99); box-shadow: 0 4px 12px rgba(16, 185, 129, 0.1); }
+    50% { opacity: 1; transform: scale(1.01); box-shadow: 0 8px 24px rgba(16, 185, 129, 0.25); }
+    100% { opacity: 0.75; transform: scale(0.99); box-shadow: 0 4px 12px rgba(16, 185, 129, 0.1); }
+  }
+
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+
+  @keyframes slideFadeIn {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes statusPulse {
+    0% { opacity: 0.4; transform: scale(0.9); }
+    50% { opacity: 1; transform: scale(1.1); }
+    100% { opacity: 0.4; transform: scale(0.9); }
+  }
+
+  /* --- Mobile & Tablet Responsiveness --- */
+  @media (max-width: 640px) {
+    header {
+      padding: 0.75rem 1rem;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.45rem;
+    }
+
+    .brand-badge {
+      width: 36px;
+      height: 36px;
+    }
+
+    .brand-icon {
+      width: 22px;
+      height: 22px;
+    }
+
+    .app-title {
+      font-size: 1.05rem;
+    }
+
+    .subtitle {
+      display: none;
+    }
+
+    .status-badge {
+      font-size: 0.76rem;
+      padding: 0.3rem 0.65rem;
+    }
+
+    #log {
+      padding: 12px;
+    }
+
+    .bubble {
+      max-width: 90%;
+      padding: 0.75rem 1rem;
+      font-size: 0.9rem;
+    }
+
+    .input-container-wrapper {
+      padding: 0 10px 10px 10px;
+    }
+
+    form {
+      padding: 0.5rem 0.85rem;
+    }
+
+    input {
+      padding: 0.65rem 0.9rem;
+      font-size: 0.9rem;
+    }
+
+    button {
+      padding: 0.65rem 1.1rem;
+      font-size: 0.9rem;
+    }
+  }
+</style>
+</head>
+<body>
+<header>
+  <div class="logo-container">
+    <div class="brand-badge">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="brand-icon">
+        <circle cx="12" cy="5" r="2.5" fill="#10B981" stroke="none"/>
+        <path d="M12 7.5v8.5" stroke="#059669"/>
+        <path d="M8 11c1.5 1.5 2.5 1.5 4 0s2.5-1.5 4 0" stroke="#10B981"/>
+        <path d="M7 19c2.5-1 3.5-1 5 0s2.5 1 5 0" stroke="#059669"/>
+        <path d="M3 13a9 9 0 0 1 18 0" stroke="#10B981" stroke-dasharray="2 2"/>
+      </svg>
+    </div>
+    <div class="header-titles">
+      <h1 class="app-title">ZenithFlow <span class="subtitle">— Developer Wellness & Ergonomic Flow Copilot</span></h1>
+    </div>
+  </div>
+  <div class="status-badge">
+    <span class="status-dot"></span>
+    🌿 Real-Time Ergonomic & Posture Copilot
+  </div>
+</header>
+
+<div id="log"></div>
+
+<div class="input-container-wrapper">
+  <div class="quick-chips">
+    <button type="button" class="chip" data-prompt="Show me a 3-minute wrist stretch guide with illustration">⚡ 3-Min Wrist Stretch</button>
+    <button type="button" class="chip" data-prompt="Search for a routine for neck relief">🧘 Neck Relief Card</button>
+    <button type="button" class="chip" data-prompt="How do I do a 20-20-20 eye break routine?">👁️ 20-20-20 Eye Break</button>
+    <button type="button" class="chip" data-prompt="Calculate my fatigue. I've been coding for 4 hours and slept 6 hours last night.">📊 Fatigue Index Score</button>
+  </div>
+  <form id="form">
+    <input id="input" placeholder="Ask about ergonomic stretches, outdoor walk advisory, or fatigue score…" autocomplete="off" autofocus>
+    <button type="submit">
+      <span>Send</span>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="22" y1="2" x2="11" y2="13"></line>
+        <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+      </svg>
+    </button>
+  </form>
+</div>
+
+<script>
+const log = document.getElementById("log");
+const form = document.getElementById("form");
+const input = document.getElementById("input");
+
+function el(tag, cls, text) { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
+
+function smoothScroll() {
+  const chatContainer = document.getElementById('log');
+  if (chatContainer) {
+    chatContainer.scrollTo({
+      top: chatContainer.scrollHeight,
+      behavior: 'smooth'
+    });
+  } else {
+    window.scrollTo({
+      top: document.body.scrollHeight,
+      behavior: 'smooth'
+    });
+  }
+}
+
+function bubble(who) {
+  const m = el("div", "msg " + who);
+  const b = el("div", "bubble");
+  m.appendChild(b);
+  log.appendChild(m);
+  smoothScroll();
+  return b;
+}
+
+function showLoadingIndicator() {
+  const m = el("div", "msg agent loading-msg");
+  const card = el("div", "loading-card");
+  
+  const spinner = el("span", "material-symbols-outlined");
+  spinner.textContent = "psychology";
+  spinner.style.animation = "spin 2s linear infinite";
+  
+  const text = el("span", null, "🌿 ZenithFlow is generating your personalized ergonomic guidance...");
+  
+  card.appendChild(spinner);
+  card.appendChild(text);
+  m.appendChild(card);
+  log.appendChild(m);
+  smoothScroll();
+  return m;
+}
+
+/* ----------------------------------------------------------------------------
+ * A2UI mini-renderer (v0.8 Basic Catalog subset).
+ * Renders Card / Column / Row / Text / Divider / List / Image / Icon.
+ * Anything else falls back to plain text (see renderReply). All text goes in via
+ * textContent and image URLs are validated, so agent output can't inject HTML.
+ * -------------------------------------------------------------------------- */
+
+// A "bound value" is usually {literalString: "..."}; we only support literals.
+function boundStr(v) {
+  if (v == null) return "";
+  if (typeof v === "string") return v;
+  if (typeof v.literalString === "string") return v.literalString;
+  return "";
+}
+
+// child ids of a component's props: single `child` and/or `children.explicitList`.
+function childIds(props) {
+  const ids = [];
+  if (props && typeof props.child === "string") ids.push(props.child);
+  const ch = props && props.children;
+  if (ch && Array.isArray(ch.explicitList)) for (const c of ch.explicitList) if (typeof c === "string") ids.push(c);
+  return ids;
+}
+
+// A2UI icon names are camelCase (locationOn); Material Symbols wants snake_case.
+function iconName(n) { return String(n || "").replace(/([a-z0-9])([A-Z])/g, "$1_$2").replace(/\s+/g, "_").toLowerCase(); }
+
+function buildNode(id, comps, seen) {
+  if (!id || seen.has(id)) return null;   // missing / cycle guard
+  seen.add(id);
+  const spec = comps[id];
+  if (!spec || typeof spec !== "object") return null;
+  const type = Object.keys(spec)[0];
+  const props = spec[type] || {};
+  const kids = () => childIds(props).map(cid => buildNode(cid, comps, seen)).filter(Boolean);
+
+  switch (type) {
+    case "Card": {
+      const d = el("div", "a2card"); kids().forEach(n => d.appendChild(n)); return d;
+    }
+    case "Column":
+    case "List": {
+      const horizontal = type === "List" && props.direction === "horizontal";
+      const d = el("div", horizontal ? "a2row" : "a2col"); kids().forEach(n => d.appendChild(n)); return d;
+    }
+    case "Row": {
+      const d = el("div", "a2row" + (props.distribution === "spaceBetween" ? " between" : ""));
+      kids().forEach(n => d.appendChild(n)); return d;
+    }
+    case "Text": {
+      const t = el("div", "a2text");
+      const hint = String(props.usageHint || "body").toLowerCase();
+      if (["h1", "h2", "h3", "h4", "h5", "h6"].includes(hint)) t.classList.add("a2-" + hint);
+      else if (hint === "caption") t.classList.add("a2-caption");
+      t.textContent = boundStr(props.text);
+      return t;
+    }
+    case "Divider":
+      return el("hr", "a2divider");
+    case "Image": {
+      const src = boundStr(props.url || props.src);
+      if (!/^https?:\/\//i.test(src)) return null;   // only allow safe URLs
+      const img = el("img", "a2img");
+      img.alt = boundStr(props.alt) || "";
+      // Bind load & error event listeners before assigning src so cached/fast images trigger smoothScroll after container expansion
+      img.addEventListener('load', () => {
+        smoothScroll();
+      });
+      img.addEventListener('error', () => {
+        smoothScroll();
+      });
+      img.src = src;
+      return img;
+    }
+    case "Video": {
+      const src = boundStr(props.url || props.src);
+      if (!/^https?:\/\//i.test(src)) return null;   // only allow safe URLs
+      const wrapper = el("div", "a2ui-video-wrapper");
+      const vid = el("video", "a2ui-video a2video");
+      vid.controls = true;
+      vid.autoplay = true;
+      vid.muted = true;
+      vid.playsInline = true;
+      vid.setAttribute("playsinline", "");
+      vid.style.width = "100%";
+      vid.style.height = "100%";
+      vid.style.aspectRatio = "16 / 9";
+      vid.style.objectFit = "contain";
+      vid.style.display = "block";
+      vid.addEventListener('loadeddata', () => { smoothScroll(); });
+      vid.addEventListener('error', () => { smoothScroll(); });
+      vid.src = src;
+      wrapper.appendChild(vid);
+      return wrapper;
+    }
+    case "Icon": {
+      const s = el("span", "material-symbols-outlined"); s.textContent = iconName(boundStr(props.name) || props.name); return s;
+    }
+    default:
+      return null;   // unknown component -> skipped (text fallback covers content)
+  }
+}
+
+// Render one or more A2UI messages (beginRendering + surfaceUpdate) into `container`.
+// Returns true if anything was drawn.
+function renderSurface(messages, container) {
+  const comps = {};
+  const roots = [];
+  for (const m of messages) {
+    if (m.beginRendering && typeof m.beginRendering.root === "string") roots.push(m.beginRendering.root);
+    const su = m.surfaceUpdate;
+    if (su && Array.isArray(su.components)) for (const c of su.components) if (c && c.id && c.component) comps[c.id] = c.component;
+  }
+  let rootIds = roots.filter(r => comps[r]);
+  if (rootIds.length === 0) {   // no valid root given -> infer un-referenced components
+    const referenced = new Set();
+    for (const id in comps) { const spec = comps[id]; childIds(spec[Object.keys(spec)[0]] || {}).forEach(c => referenced.add(c)); }
+    rootIds = Object.keys(comps).filter(id => !referenced.has(id));
+  }
+  let drew = false;
+  for (const rid of rootIds) { const node = buildNode(rid, comps, new Set()); if (node) { container.appendChild(node); drew = true; } }
+  return drew;
+}
+
+// Fallback: pull every Text value out of the messages as plain text.
+function flattenText(messages) {
+  const out = [];
+  for (const m of messages) {
+    const su = m.surfaceUpdate;
+    if (su && Array.isArray(su.components)) for (const c of su.components) if (c && c.component && c.component.Text) out.push(boundStr(c.component.Text.text));
+  }
+  return out.join("\n").trim();
+}
+
+function renderReply(b, parts) {
+  b.textContent = "";   // clear placeholder
+  const texts = parts.filter(p => p && (p.kind === "text" || (!p.kind && p.text))).map(p => p.text || "");
+  const a2ui = parts.filter(p => p && p.kind === "a2ui" && p.data).map(p => p.data);
+
+  const textStr = texts.join("\n").trim();
+  if (textStr) b.appendChild(el("div", null, textStr));
+
+  if (a2ui.length) {
+    b.classList.add("rich");
+    if (!renderSurface(a2ui, b)) b.appendChild(el("div", null, flattenText(a2ui) || "(no card content)"));
+  }
+  if (!b.childNodes.length) b.textContent = "(no response)";
+  smoothScroll();
+}
+
+// Wire quick suggestion chips
+document.querySelectorAll(".chip").forEach(chip => {
+  chip.addEventListener("click", () => {
+    const prompt = chip.getAttribute("data-prompt");
+    if (prompt) {
+      input.value = prompt;
+      form.dispatchEvent(new Event("submit", { cancelable: true, bubbles: true }));
+    }
+  });
+});
+
+// Submit handler
+form.addEventListener("submit", async (ev) => {
+  ev.preventDefault();
+  const text = input.value.trim();
+  if (!text) return;
+  bubble("user").textContent = text;
+  input.value = "";
+  
+  const loadingEl = showLoadingIndicator();
+  
+  try {
+    const res = await fetch("/chat", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ message: text }) });
+    const raw = await res.text();
+    loadingEl.remove();
+    
+    const b = bubble("agent");
+    let data;
+    try { data = JSON.parse(raw); }
+    catch { throw new Error(`Server returned non-JSON (HTTP ${res.status}). ${raw.slice(0, 300)}`); }
+    renderReply(b, data.parts || []);
+  } catch (e) {
+    if (loadingEl && loadingEl.parentNode) loadingEl.remove();
+    const b = bubble("agent");
+    b.textContent = "Error: " + e.message;
+    smoothScroll();
+  }
+});
+</script>
+</body>
+</html>
