@@ -1,94 +1,57 @@
-# my-agent
+# ZenithFlow — Developer Wellness & Ergonomic Flow Copilot 🌿
 
-Simple ReAct agent
-Agent generated with `agents-cli` version `1.1.0`
+> Real-time Posture & Flow Assistant built with Google ADK, Agent Engine, and A2UI.
 
-## Project Structure
+![ZenithFlow Demo Recording](demo.gif)
 
-```
-my-agent/
-├── app/         # Core agent code
-│   ├── agent.py               # Main agent logic
-│   ├── fast_api_app.py        # FastAPI Backend server
-│   └── app_utils/             # App utilities and helpers
-├── tests/                     # Unit, integration, and load tests
-├── GEMINI.md                  # AI-assisted development guide
-└── pyproject.toml             # Project dependencies
-```
+## 🌟 Overview
 
-> 💡 **Tip:** Use [Antigravity CLI](https://antigravity.google/) for AI-assisted development - project context is pre-configured in `GEMINI.md`.
+**ZenithFlow** is an intelligent ergonomic copilot designed specifically for software engineers. It actively tracks physical strain points (neck, wrist, lower back, shoulder pain), coding habits, and hydration/fatigue levels to deliver personalized micro-stretch routines, break schedules, and real-time posture advice.
 
-## Requirements
-
-Before you begin, ensure you have:
-- **uv**: Python package manager (used for all dependency management in this project) - [Install](https://docs.astral.sh/uv/getting-started/installation/) ([add packages](https://docs.astral.sh/uv/concepts/dependencies/) with `uv add <package>`)
-- **agents-cli**: Agents CLI - Install with `uv tool install google-agents-cli`
-- **Google Cloud SDK**: For GCP services - [Install](https://cloud.google.com/sdk/docs/install)
-
-
-## Quick Start
-
-Install `agents-cli` and its skills if not already installed:
-
-```bash
-uvx google-agents-cli setup
-```
-
-Install required packages:
-
-```bash
-agents-cli install
-```
-
-Test the agent with a local web server:
-
-```bash
-agents-cli playground
-```
-
-You can also use features from the [ADK](https://adk.dev/) CLI with `uv run adk`.
-
-## Commands
-
-| Command              | Description                                                                                 |
-| -------------------- | ------------------------------------------------------------------------------------------- |
-| `agents-cli install` | Install dependencies using uv                                                         |
-| `agents-cli playground` | Launch local development environment                                                  |
-| `agents-cli lint`    | Run code quality checks                                                               |
-| `agents-cli eval`    | Evaluate agent behavior (generate, grade, analyze, and more — see `agents-cli eval --help`) |
-| `uv run pytest tests/unit tests/integration` | Run unit and integration tests                                                        |
-| `agents-cli deploy`  | Deploy agent to Agent Runtime                                                                |
-| `agents-cli publish gemini-enterprise` | Register deployed agent to Gemini Enterprise                    || [A2A Inspector](https://github.com/a2aproject/a2a-inspector) | Launch A2A Protocol Inspector                                                        |
-
-## 🛠️ Project Management
-
-| Command | What It Does |
-|---------|--------------|
-| `agents-cli scaffold enhance` | Add CI/CD pipelines and Terraform infrastructure |
-| `agents-cli infra cicd` | One-command setup of entire CI/CD pipeline + infrastructure |
-| `agents-cli scaffold upgrade` | Auto-upgrade to latest version while preserving customizations |
+### ✨ Key Features
+- **🌿 Ergonomic Strain Memory**: Long-term memory tracking of developer physical strain points across sessions.
+- **🎨 Visual Mobility Illustrations**: Dynamic generation of high-quality ergonomic stretch illustrations using Imagen.
+- **🎬 Omni Motion Previews**: 4-second realistic video mobility previews generated on-demand via Google GenAI Omni model (`gemini-omni-flash-preview`).
+- **📱 A2UI Rich Display Cards**: Rendered dynamically using A2UI (version 0.8) cards, columns, images, and video players.
+- **⚡ Developer Fatigue Index Calculator**: Code execution sandbox calculation for hydration and fatigue scores.
+- **💾 Firestore Wellness Logging**: Persistent tracking of daily ergonomic logs and stretch routines.
 
 ---
 
-## Development
+## 🏗️ Project Architecture
 
-Edit your agent logic in `app/agent.py` and test with `agents-cli playground` - it auto-reloads on save.
-
-## Deployment
-
-```bash
-gcloud config set project <your-project-id>
-agents-cli deploy
+```
+zenith-flow/
+├── app/
+│   ├── agent.py               # Main ZenithFlow ADK agent logic & tool definitions
+│   └── a2ui_utils.py          # A2UI v0.8 response callback & media sanitizer
+├── frontend/                  # Modern Glassmorphic Web App (Cloud Run)
+│   ├── main.py                # FastAPI proxy server (A2A protocol interface)
+│   └── static/
+│       └── index.html         # Responsive chat UI with native A2UI HTML5 video renderer
+├── demo.gif                   # Recorded demo animation of ZenithFlow
+└── agent_demo.webm            # High-definition WebM recording with Google Lyria audio
 ```
 
-To add CI/CD and Terraform, run `agents-cli scaffold enhance`.
-To set up your production infrastructure, run `agents-cli infra cicd`.
+---
 
-## Observability
+## 🚀 Running Locally
 
-Built-in telemetry exports to Cloud Trace, BigQuery, and Cloud Logging.
+1. **Install Dependencies**:
+   ```bash
+   uv sync
+   ```
 
-## A2A Inspector
+2. **Start the Frontend Server**:
+   ```bash
+   cd frontend
+   AGENT_ENGINE_RESOURCE_NAME="<your-agent-engine-resource-name>" AGENT_DIRECTORY="app" python3 -m uvicorn main:app --host 0.0.0.0 --port 8080
+   ```
+3. Open `http://localhost:8080` in your browser.
 
-This agent supports the [A2A Protocol](https://a2a-protocol.org/). Use the [A2A Inspector](https://github.com/a2aproject/a2a-inspector) to test interoperability.
-See the [A2A Inspector docs](https://github.com/a2aproject/a2a-inspector) for details.
+---
+
+## ☁️ Deployment
+
+- **Agent Engine**: `agents-cli deploy --project <project-id> --region us-east1`
+- **Frontend App**: `gcloud run deploy zenith-flow-frontend --source ./frontend --region us-east1 --allow-unauthenticated`
